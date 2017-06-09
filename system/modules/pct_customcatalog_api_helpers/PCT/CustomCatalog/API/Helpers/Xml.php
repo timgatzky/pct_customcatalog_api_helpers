@@ -122,4 +122,61 @@ class Xml extends \PCT\CustomCatalog\API\Controller
 		$objXml = $this->parse();
 		return $objXml->xpath('//'.$strNode);
 	}
+	
+	
+	/**
+	 * Find a value in an xml object
+	 * @param string 			Xpath search string
+	 * @param object 			Optional the xml object to search
+	 * @return array|boolean	Return value or boolean false if nothing was found
+	 * 
+	 * Example return node values: myParentNode/myChildNode
+	 * Example return attribute values: myParentNode/myChildNode->myAttribute
+	 */
+	public static function findValue($strSearch, \SimpleXMLElement $objXml=null)
+	{
+		if($objXml === null)
+		{
+			$objXml = $this->parse();
+		}
+		
+		// syntax: /query->attribute
+		$arrQuery = explode('->', str_replace('"', "'", $strSearch) );
+		$strXpath = ltrim($arrQuery[0],'//');
+		
+		// do an xpath search on the xml
+		$arrResults = $objXml->xpath("//".$strXpath);
+		
+		if($arrResults === null)
+		{
+			return false;
+		}
+		
+		// attribute values
+		$strAttribute = '';
+		if(isset($arrQuery[1]) && strlen($arrQuery[1]) > 0)
+		{
+			$strAttribute = str_replace(array('[',']'),'',$arrQuery[1]);
+		}
+		
+		$arrReturn = array();
+		foreach($arrResults as $result)
+		{
+			// attribute value
+			if(strlen($strAttribute) > 0)
+			{
+				$arrReturn[] = (string)$result->attributes()->{$strAttribute};
+				continue;
+			}
+			// pass the whole found
+			$arrReturn[] = $result;
+		}
+		
+		if(empty($arrReturn))
+		{
+			return false;
+		}
+		
+		return $arrReturn;
+	}
 }
