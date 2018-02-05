@@ -1,2 +1,5 @@
+### 1.0.1
+Update: Put constants in quoates
+
 ### 1.0.0
 initial
