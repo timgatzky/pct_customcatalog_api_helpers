@@ -8,7 +8,7 @@
  * @copyright	Tim Gatzky 2018
  * @author		Tim Gatzky <info@tim-gatzky.de>
  * @package		pct_customelements
- * @subpackage	pct_customelements_plugin_customcatalog
+ * @subpackage	pct_customcatalog_api_helpers
  * @link		http://contao.org
  */
 
