@@ -16,4 +16,4 @@
 /**
  * Constants
  */
-define('PCT_CUSTOMCATALOG_API_HELPERS_VERSION', '1.0.1');
+define('PCT_CUSTOMCATALOG_API_HELPERS_VERSION', '1.1.0');
