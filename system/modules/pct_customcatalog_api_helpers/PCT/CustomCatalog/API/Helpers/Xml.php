@@ -8,8 +8,7 @@
  * @copyright	Tim Gatzky 2017
  * @author		Tim Gatzky <info@tim-gatzky.de>
  * @package		pct_customelements
- * @subpackage	pct_customcatalog_api_eautoseller
- * @api			http://www.eautoseller.de/	
+ * @subpackage	pct_customcatalog_api_helpers
  * @link		http://contao.org
  */
 
@@ -78,8 +77,8 @@ class Xml extends \PCT\CustomCatalog\API\Controller
 
 	/**
 	 * Parse an xml file and return the xml as object/array
-	 * @param string Path to the file
-	 * @retrun string XML content
+	 * @param string	Path to the file
+	 * @retrun object	SimpleXML
 	 */
 	public function parse()
 	{
@@ -91,17 +90,20 @@ class Xml extends \PCT\CustomCatalog\API\Controller
 		// check if simplexml is loaded
 		if(extension_loaded('simplexml') === false)
 		{
-			\System::loadLanguageFiles('default');
-
 			// write error log
-			\System::log($GLOBALS['TL_LANG']['PCT_CUSTOMCATALOG_API_EAUTOSELLER']['ERR']['no_simplexml'],__METHOD__,TL_ERROR);
+			\System::log('PHP SimpleXML not found or not loaded. : http://php.net/manual/de/book.simplexml.php',__METHOD__,TL_ERROR);
 
-			return '';
+			return null;
 		}
-
-		// parse the file without cdata
+		
+		if(file_get_contents($this->strFile) == '')
+		{
+			\System::log('File source ('.$this->strFile.') is empty',__METHOD__,TL_ERROR);
+			return null;
+		}
+	
 		$objXml = simplexml_load_file( $this->strFile,'SimpleXMLElement',LIBXML_NOCDATA );
-
+		
 		// set
 		$this->set('objXml',$objXml);
 
@@ -120,6 +122,12 @@ class Xml extends \PCT\CustomCatalog\API\Controller
 	{
 		// parse the xml file and retrieve simple xml object
 		$objXml = $this->parse();
+		
+		if($objXml === null)
+		{
+			return '';
+		}
+		
 		return $objXml->xpath('//'.$strNode);
 	}
 	
@@ -133,7 +141,7 @@ class Xml extends \PCT\CustomCatalog\API\Controller
 	 * Example return node values: myParentNode/myChildNode
 	 * Example return attribute values: myParentNode/myChildNode->myAttribute
 	 */
-	public static function findValue($strSearch, \SimpleXMLElement $objXml=null)
+	public function findValue($strSearch, \SimpleXMLElement $objXml=null)
 	{
 		if($objXml === null)
 		{
