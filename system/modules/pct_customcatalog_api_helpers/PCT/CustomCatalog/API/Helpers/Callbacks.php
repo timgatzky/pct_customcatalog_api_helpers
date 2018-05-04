@@ -32,7 +32,7 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 	 */
 	public function executeXmlApiJobs($strTable, $objApi, $objJob)
 	{
-		if($objJob->action != 'xml' && ($objJob->action != 'source' && $objJob->mode != 'xml'))
+		if( ($objJob->action == 'source' && $objJob->mode != 'xml') || $objJob->action != 'xml')
 		{
 			return;
 		}
@@ -72,10 +72,10 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 			$objXml = \PCT\CustomElements\Plugins\CustomCatalog\Core\Cache::getApiAffectedData($strCacheKey);
 		}
 		
-		// lokal file
+		// local file
 		if($objXml === null && $objApi->source == 'xml' && $objApi->singleSRC)
 		{
-			$strFile = TL_ROOT.'/'.\FilesModel::findByPk($this->singleSRC)->path;
+			$strFile = TL_ROOT.'/'.\FilesModel::findByPk($objApi->singleSRC)->path;
 			$objXml = new \PCT\CustomCatalog\API\Helpers\Xml($strFile);
 		}
 
@@ -89,11 +89,10 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		\PCT\CustomElements\Plugins\CustomCatalog\Core\Cache::addApiAffectedData($strCacheKey,$objXml);
 		
 		// create a simple local xml object to gain access via xpath to the current xml only
-		$objXml = new \SimpleXMLElement( $objXml->saveXML() );
+		$objXml = new \SimpleXMLElement( $objXml->parse()->saveXML() );
 		
 		// use the helper to find the value
 		$arrReturn = array();
-		
 		if($objJob->action == 'xml' && strlen($objJob->valueSRC) > 0)
 		{
 			$arrReturn = \PCT\CustomCatalog\API\Helpers\Xml::findValue($objJob->valueSRC, $objXml);
@@ -114,7 +113,7 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		$objParams->job = $objJob;
 		$objParams->internalId = $intInternalId;
 		$objParams->data = $arrInput;
-		
+				
 		// Hook to modify the xml results before passing them to the output department
 		if (isset($GLOBALS['CUSTOMCATALOG_HOOKS']['xmlDataOutput']) && count($GLOBALS['CUSTOMCATALOG_HOOKS']['xmlDataOutput']) > 0)
 		{
