@@ -16,4 +16,9 @@
 /**
  * Constants
  */
-define(PCT_CUSTOMCATALOG_API_HELPERS_VERSION, '1.0.0');
+define('PCT_CUSTOMCATALOG_API_HELPERS_VERSION', '1.1.0');
+
+/**
+ * Hooks
+ */
+$GLOBALS['CUSTOMCATALOG_HOOKS']['executeApiJob'][] = array('PCT\CustomCatalog\API\Helpers\Callbacks','executeXmlApiJobs');

@@ -25,4 +25,6 @@ ClassLoader::addClasses(array
 (
 	'PCT\CustomCatalog\API\Helpers\Functions' 	=> 'system/modules/pct_customcatalog_api_helpers/PCT/CustomCatalog/API/Helpers/Functions.php',
 	'PCT\CustomCatalog\API\Helpers\Xml' 		=> 'system/modules/pct_customcatalog_api_helpers/PCT/CustomCatalog/API/Helpers/Xml.php',
+	'PCT\CustomCatalog\API\Helpers\Callbacks' 	=> 'system/modules/pct_customcatalog_api_helpers/PCT/CustomCatalog/API/Helpers/Callbacks.php',
+	'PCT\CustomCatalog\API\Helpers\Backend\TableCustomCatalogJob' 		=> 'system/modules/pct_customcatalog_api_helpers/PCT/CustomCatalog/API/Helpers/Backend/TableCustomCatalogJob.php',
 ));
