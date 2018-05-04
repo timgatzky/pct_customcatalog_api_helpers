@@ -1,5 +1,5 @@
 ### 1.1.0
-Added: XML API jobs
+Added: XML API jobs (#1)
 
 ### 1.0.1
 Update: Put constants in quoates
