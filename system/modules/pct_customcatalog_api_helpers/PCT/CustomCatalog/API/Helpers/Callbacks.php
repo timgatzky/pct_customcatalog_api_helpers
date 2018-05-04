@@ -20,7 +20,6 @@ namespace PCT\CustomCatalog\API\Helpers;
 /**
  * Class file
  * Callbacks
- * Provides basic api functions and delegates the import and export features
  */
 class Callbacks extends \PCT\CustomCatalog\API\Controller
 {
