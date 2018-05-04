@@ -45,11 +45,11 @@ class TableCustomCatalogJob extends \Backend
 			$objDC->activeRecord = \Database::getInstance()->prepare("SELECT * FROM ".$objDC->table." WHERE id=?")->limit(1)->execute($objDC->id);
 		}
 		
-		// fallback
-		$GLOBALS['TL_DCA'][$objDC->table]['fields']['hookSRC']['eval']['decodeEntities'] = true;
-		
 		// @var object
 		$objApi = \PCT\CustomCatalog\Models\ApiModel::findByPk($objDC->activeRecord->pid);
+		
+		// fallback
+		$GLOBALS['TL_DCA'][$objDC->table]['fields']['hookSRC']['eval']['decodeEntities'] = true;
 		
 		// include xml as action option
 		$GLOBALS['PCT_CUSTOMCATALOG']['API']['helpers']['actions'] = array('xml'=>'xml');
@@ -64,8 +64,6 @@ class TableCustomCatalogJob extends \Backend
 		{
 			$GLOBALS['TL_DCA'][$objDC->table]['fields']['valueSRC']['label'] = &$GLOBALS['TL_LANG'][$objDC->table]['valueSRC_xpath'];
 		}
-		// never use the source field
-		unset($GLOBALS['TL_DCA'][$objDC->table]['fields']['source']);
 		
 		if($objDC->activeRecord->action == 'source' && $objDC->activeRecord->mode == 'xml')
 		{
