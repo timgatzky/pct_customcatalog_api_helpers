@@ -57,7 +57,7 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		}
 		
 		// local file
-		if($objXml === null && $objApi->source == 'xml' && $objApi->singleSRC)
+		if($objXml === null && strlen($objApi->singleSRC) > 0)
 		{
 			$strFile = TL_ROOT.'/'.\FilesModel::findByPk($objApi->singleSRC)->path;
 			$objXml = new \PCT\CustomCatalog\API\Helpers\Xml($strFile);
