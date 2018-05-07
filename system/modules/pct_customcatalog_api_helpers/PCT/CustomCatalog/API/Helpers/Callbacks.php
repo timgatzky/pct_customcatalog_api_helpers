@@ -28,10 +28,12 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 	 * @param string	Name of the table
 	 * @param object	API object
 	 * @param object	Job object
+	 *
+	 * called from: $GLOBALS['CUSTOMCATALOG_HOOKS']['executeApiJob']
 	 */
-	public function executeXmlApiJobs($strTable, $objApi, $objJob)
+	public function executeApiJobs($strTable, $objApi, $objJob)
 	{
-		if( ($objJob->action == 'source' && $objJob->mode != 'xml') || $objJob->action != 'xml')
+		if($objJob->action != 'xml')
 		{
 			return;
 		}
@@ -47,23 +49,6 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		
 		$intIndex = $objJob->get('data_index'); // CC >= 2.6.0
 		
-		if(\Input::get('index') != '')
-		{
-			$intIndex = \Input::get('index');
-		}
-		
-		(int)$intInternalId = $arrInput[ $intIndex ] ?: 0;
-		if($objApi->get('uniqueSource') != '')
-		{
-			(int)$intInternalId = $arrInput[ $objApi->uniqueSource ];
-		}
-		
-		if($intInternalId < 1)
-		{
-			$objApi->addError('Internal ID for data index: '.$intIndex.' not found');
-			return;
-		}
-		
 		// look up from cache
 		$strCacheKey = 'xml_'.$objApi->id.'_'.$intInternalId;
 		if( \PCT\CustomElements\Plugins\CustomCatalog\Core\Cache::getApiAffectedData($strCacheKey) )
@@ -72,10 +57,12 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		}
 		
 		// local file
-		if($objXml === null && $objApi->source == 'xml' && $objApi->singleSRC)
+		if($objXml === null && strlen($objApi->singleSRC) > 0)
 		{
 			$strFile = TL_ROOT.'/'.\FilesModel::findByPk($objApi->singleSRC)->path;
 			$objXml = new \PCT\CustomCatalog\API\Helpers\Xml($strFile);
+			// create a simple local xml object to gain access via xpath to the current xml only
+			$objXml = new \SimpleXMLElement( $objXml->parse()->saveXML() );
 		}
 
 		if($objXml === null)
@@ -87,22 +74,28 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		// add to cache
 		\PCT\CustomElements\Plugins\CustomCatalog\Core\Cache::addApiAffectedData($strCacheKey,$objXml);
 		
-		// create a simple local xml object to gain access via xpath to the current xml only
-		$objXml = new \SimpleXMLElement( $objXml->parse()->saveXML() );
-		
 		// use the helper to find the value
-		$arrReturn = array();
-		if($objJob->action == 'xml' && strlen($objJob->valueSRC) > 0)
+		$varReturn = '';
+		if(!empty($objJob->valueSRC))
 		{
-			$arrReturn = \PCT\CustomCatalog\API\Helpers\Xml::findValue($objJob->valueSRC, $objXml);
+			$varReturn = \PCT\CustomCatalog\API\Helpers\Xml::findValue($objJob->valueSRC, $objXml);
 			
-			if($arrReturn === false)
+			if($varReturn === false)
 			{
 				return;
 			}
 			
-			$arrReturn = implode(',',$arrReturn);
+			// point to a value depending on the index
+			if(isset($varReturn[ $intIndex ]))
+			{
+				$varReturn = $varReturn[ $intIndex ];
+			}
+			else
+			{
+				$varReturn = implode(',',$varReturn);
+			}
 		}
+		
 		
 		// pass couple information to the callback function
 		$objParams = new \StdClass;
@@ -110,21 +103,20 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		$objParams->api = $objApi;
 		$objParams->table = $strTable;
 		$objParams->job = $objJob;
-		$objParams->internalId = $intInternalId;
 		$objParams->data = $arrInput;
+		$objParams->index = $intIndex;
 				
 		// Hook to modify the xml results before passing them to the output department
 		if (isset($GLOBALS['CUSTOMCATALOG_HOOKS']['xmlDataOutput']) && count($GLOBALS['CUSTOMCATALOG_HOOKS']['xmlDataOutput']) > 0)
 		{
 			foreach($GLOBALS['CUSTOMCATALOG_HOOKS']['xmlDataOutput'] as $callback)
 			{
-				$arrOutput[$objJob->target] = \System::importStatic($callback[0])->{$callback[1]}($arrReturn,$objParams);
+				$varReturn = \System::importStatic($callback[0])->{$callback[1]}($varReturn,$objParams);
 			}
 		}
-		else
-		{
-			$arrOutput[$objJob->target] = $arrReturn;
-		}
+		
+		$arrOutput[$objJob->target] = $varReturn;
+		
 		
 		// apply	
 		$objJob->output($arrOutput);
