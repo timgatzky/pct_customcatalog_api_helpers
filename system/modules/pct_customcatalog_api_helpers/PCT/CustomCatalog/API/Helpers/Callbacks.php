@@ -48,10 +48,6 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		}
 		
 		$intIndex = $objJob->get('data_index'); // CC >= 2.6.0
-		if(\Input::get('index') != '')
-		{
-			$intIndex = \Input::get('index');
-		}
 		
 		// look up from cache
 		$strCacheKey = 'xml_'.$objApi->id.'_'.$intInternalId;
@@ -79,17 +75,25 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		\PCT\CustomElements\Plugins\CustomCatalog\Core\Cache::addApiAffectedData($strCacheKey,$objXml);
 		
 		// use the helper to find the value
-		$arrReturn = array();
+		$varReturn = '';
 		if(!empty($objJob->valueSRC))
 		{
-			$arrReturn = \PCT\CustomCatalog\API\Helpers\Xml::findValue($objJob->valueSRC, $objXml);
+			$varReturn = \PCT\CustomCatalog\API\Helpers\Xml::findValue($objJob->valueSRC, $objXml);
 			
-			if($arrReturn === false)
+			if($varReturn === false)
 			{
 				return;
 			}
 			
-			$arrReturn = implode(',',$arrReturn);
+			// point to a value depending on the index
+			if(isset($varReturn[ $intIndex ]))
+			{
+				$varReturn = $varReturn[ $intIndex ];
+			}
+			else
+			{
+				$varReturn = implode(',',$varReturn);
+			}
 		}
 		
 		
@@ -107,13 +111,12 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		{
 			foreach($GLOBALS['CUSTOMCATALOG_HOOKS']['xmlDataOutput'] as $callback)
 			{
-				$arrOutput[$objJob->target] = \System::importStatic($callback[0])->{$callback[1]}($arrReturn,$objParams);
+				$varReturn = \System::importStatic($callback[0])->{$callback[1]}($varReturn,$objParams);
 			}
 		}
-		else
-		{
-			$arrOutput[$objJob->target] = $arrReturn;
-		}
+		
+		$arrOutput[$objJob->target] = $varReturn;
+		
 		
 		// apply	
 		$objJob->output($arrOutput);
