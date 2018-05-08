@@ -117,7 +117,6 @@ class Callbacks extends \PCT\CustomCatalog\API\Controller
 		
 		$arrOutput[$objJob->target] = $varReturn;
 		
-		
 		// apply	
 		$objJob->output($arrOutput);
 	}
