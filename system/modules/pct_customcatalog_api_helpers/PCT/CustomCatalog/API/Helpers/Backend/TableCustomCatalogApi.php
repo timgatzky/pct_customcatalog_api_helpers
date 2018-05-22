@@ -56,8 +56,40 @@ class TableCustomCatalogApi extends \Backend
 			// allow xml files only
 			$GLOBALS['TL_DCA'][$objDC->table]['fields']['singleSRC']['eval']['extensions'] = 'xml';
 			
-			// add backend message 
-			\Message::addInfo($GLOBALS['TL_LANG']['tl_pct_customcatalog_api']['uniqueSource']['xml_info']);
+			if($objDC->activeRecord->type == 'standard' && \Input::get('act') == 'edit')
+			{
+				// add backend message 
+				\Message::addInfo($GLOBALS['TL_LANG']['tl_pct_customcatalog_api']['uniqueSource']['xml_info']);
+			}
 		}
 	}
+	
+	
+	/**
+	 * Test the connection to the external url
+	 * @var mixed
+	 * @return mixed
+	 *
+	 * called from external_api_url.save_callback
+	 */
+	public function testConnection($varValue, $objDC)
+	{
+		if(empty($varValue))
+		{
+			return $varValue;
+		}
+		
+		try
+		{
+			$objHelper = new XmlHelper( $varValue );
+			$objHelper->parse();
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception( $e->getMessage() );
+		}
+		
+		return $varValue;
+	}
+
 }

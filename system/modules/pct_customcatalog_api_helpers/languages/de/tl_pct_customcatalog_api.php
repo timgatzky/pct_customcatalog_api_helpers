@@ -16,3 +16,5 @@
 $GLOBALS['TL_LANG']['tl_pct_customcatalog_api']['source']['xml']				= 'XML-Datei';
 $GLOBALS['TL_LANG']['tl_pct_customcatalog_api']['target']['xml']				= 'XML-Datei';
 $GLOBALS['TL_LANG']['tl_pct_customcatalog_api']['uniqueSource']['xml_info'] 	= 'XML-Dateien unterliegen keiner allgemein-gültige Struktur. Eine Ermittlung von Schlüsselfeldern kann nur individuell erfolgen. Nutzen Sie dafür den options_callback des Feldes "tl_pct_customcatalog_api.uniqueSource". <a style="text-decoration:underline" href="https://docs.contao.org/books/api/dca/callbacks.html" target="_blank">Contao-Handbuch</a>';
+$GLOBALS['TL_LANG']['tl_pct_customcatalog_api']['url'][0]				= 'API-Adresse';
+$GLOBALS['TL_LANG']['tl_pct_customcatalog_api']['url'][1]				= 'Geben Sie die externe API-Internetadresse an (inkl. Parametern)';
