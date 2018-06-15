@@ -78,9 +78,10 @@ class Xml extends \PCT\CustomCatalog\API\Controller
 	/**
 	 * Parse an xml file and return the xml as object/array
 	 * @param string	Path to the file
+	 * @param boolean	Preserve CDDATA or not
 	 * @retrun object	SimpleXML
 	 */
-	public function parse()
+	public function parse($blnCDATA=true)
 	{
 		if($this->isModified('objXml'))
 		{
@@ -102,7 +103,7 @@ class Xml extends \PCT\CustomCatalog\API\Controller
 			return null;
 		}
 	
-		$objXml = simplexml_load_file( $this->strFile,'SimpleXMLElement',LIBXML_NOCDATA );
+		$objXml = simplexml_load_file( $this->strFile,'SimpleXMLElement', $blnCDATA ? null : LIBXML_NOCDATA );
 		
 		// set
 		$this->set('objXml',$objXml);
