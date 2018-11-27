@@ -136,19 +136,14 @@ class Xml extends \PCT\CustomCatalog\API\Controller
 	/**
 	 * Find a value in an xml object
 	 * @param string 			Xpath search string
-	 * @param object 			Optional the xml object to search
+	 * @param object 			The xml object to search
 	 * @return array|boolean	Return value or boolean false if nothing was found
 	 * 
 	 * Example return node values: myParentNode/myChildNode
 	 * Example return attribute values: myParentNode/myChildNode->myAttribute
 	 */
-	public function findValue($strSearch, \SimpleXMLElement $objXml=null)
+	public static function findValue($strSearch, \SimpleXMLElement $objXml)
 	{
-		if($objXml === null)
-		{
-			$objXml = $this->parse();
-		}
-		
 		// syntax: /query->attribute
 		$arrQuery = explode('->', str_replace('"', "'", $strSearch) );
 		$strXpath = ltrim($arrQuery[0],'//');
