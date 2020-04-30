@@ -28,4 +28,5 @@ ClassLoader::addClasses(array
 	'PCT\CustomCatalog\API\Helpers\Callbacks' 							=> 'system/modules/pct_customcatalog_api_helpers/PCT/CustomCatalog/API/Helpers/Callbacks.php',
 	'PCT\CustomCatalog\API\Helpers\Backend\TableCustomCatalogJob' 		=> 'system/modules/pct_customcatalog_api_helpers/PCT/CustomCatalog/API/Helpers/Backend/TableCustomCatalogJob.php',
 	'PCT\CustomCatalog\API\Helpers\Backend\TableCustomCatalogApi' 		=> 'system/modules/pct_customcatalog_api_helpers/PCT/CustomCatalog/API/Helpers/Backend/TableCustomCatalogApi.php',
+	'PCT\CustomCatalog\API\Connections\FTP' 							=> 'system/modules/pct_customcatalog_api_helpers/PCT/CustomCatalog/API/Connections/FTP.php',
 ));
