@@ -44,6 +44,12 @@ class FTP
 	 */
 	protected $arrConfig = array();
 
+	/**
+	 * The root path
+	 * @var string
+	 */
+	protected $strRoot = '';
+
 
 	/**
 	 * Create a new FTP connection
@@ -74,7 +80,40 @@ class FTP
 			return null;
 		}
 
+		// set root
+		if( empty($arrConfig['path']) === false )
+		{
+			$this->__set('root',$arrConfig['path']);
+		}
+
 		return $this->intResource;
+	}
+
+
+	/**
+	 * Setters
+	 * @param string
+	 * @param mixed
+	 */
+	public function __set($strKey, $varValue)
+	{
+		switch($strKey)
+		{
+			case 'root':
+				$this->strRoot = $varValue;
+				break;
+		}
+	}
+
+
+	/**
+	 * Getters
+	 * @param string
+	 * @param mixed
+	 */
+	public function __get($strKey)
+	{
+		return $this->{$strKey};
 	}
 
 
@@ -108,11 +147,6 @@ class FTP
 	 */
 	public function send($strSource, $strDestination)
 	{
-		// set root folder
-		if( empty($this->arrConfig['path']) === false )
-		{
-			$strDestination = $this->arrConfig['path'] .'/'.$strDestination;
-		}
-		return \ftp_put($this->intResource,$strDestination,$strSource);
+		return \ftp_put($this->intResource,$this->strRoot .'/'.$strDestination,$strSource);
 	}
 }
