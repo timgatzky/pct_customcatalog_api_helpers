@@ -32,7 +32,7 @@ use Contao\System;
  * 
  * Usage:
  *
- *     $config = array('host'=>'myServer','user'=>'myUser','password'=>'myPassword');
+ *     $config = array('host'=>'myServer','user'=>'myUser','password'=>'myPassword','ssl'=>boolean);
  * 
  *     $ftp = new PCT\CustomCatalog\Connections\FTP( $config );
  *     $ftp->__set('root','myRootFolder'); // optional root folder
@@ -77,7 +77,14 @@ class FTP
 		$this->arrConfig = $arrConfig;
 
 		// establish connection
-		$this->intResource = \ftp_connect($arrConfig['host'], $arrConfig['port']);
+		if( (boolean)$arrConfig['ssl'] === true )
+		{
+			$this->intResource = \ftp_ssl_connect($arrConfig['host'], $arrConfig['port']);
+		}
+		else 
+		{
+			$this->intResource = \ftp_connect($arrConfig['host'], $arrConfig['port']);
+		}
 
 		if ($this->intResource === null) 
 		{
@@ -130,6 +137,21 @@ class FTP
 		{
 			case 'root':
 				return $this->strRoot;
+				break;
+			case 'config':
+				return $this->arrConfig;
+				break;
+			case 'user':
+				return $this->arrConfig['user'];
+				break;
+			case 'password':
+				return $this->arrConfig['password'];
+				break;
+			case 'host':
+				return $this->arrConfig['host'];
+				break;
+			case 'port':
+				return $this->arrConfig['port'];
 				break;
 			default:
 				break;
