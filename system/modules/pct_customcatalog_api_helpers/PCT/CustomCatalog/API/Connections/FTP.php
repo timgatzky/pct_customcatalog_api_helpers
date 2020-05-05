@@ -58,7 +58,8 @@ class FTP
 	 */
 	public function __construct($arrConfig)
 	{
-		if (empty($arrConfig) === true) {
+		if (empty($arrConfig) === true) 
+		{
 			throw new \Exception('Missing connection information');
 		}
 
@@ -102,6 +103,9 @@ class FTP
 			case 'root':
 				$this->strRoot = $varValue;
 				break;
+			default:
+				$this->{$strKey} = $varValue;
+				break;
 		}
 	}
 
@@ -126,8 +130,7 @@ class FTP
 		if (empty($this->arrConfig) === true || empty($this->intResource) === true) 
 		{
 			throw new \Exception('Missing connection information');
-		}
-		
+		}	
 		return \ftp_login($this->intResource, $this->arrConfig['user'], $this->arrConfig['password']);
 	}
 
