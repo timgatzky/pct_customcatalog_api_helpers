@@ -74,9 +74,9 @@ class FTP
 		}
 
 		// login
-		if ( $this->login() ) 
+		if ( $this->login() === false ) 
 		{
-			System::log('Cannot refused for user ' . $arrConfig['user'], __METHOD__, \TL_ERROR);
+			System::log('Connection refused for user ' . $arrConfig['user'], __METHOD__, \TL_ERROR);
 			return null;
 		}
 
@@ -123,11 +123,12 @@ class FTP
 	 */
 	public function login()
 	{
-		if (empty($this->arrConfig) === true) 
+		if (empty($this->arrConfig) === true || empty($this->intResource) === true) 
 		{
 			throw new \Exception('Missing connection information');
 		}
-		return \ftp_login($this->intResource, $this->arrConfig['user'], $this->arrConfig['pass']);
+		
+		return \ftp_login($this->intResource, $this->arrConfig['user'], $this->arrConfig['password']);
 	}
 
 
