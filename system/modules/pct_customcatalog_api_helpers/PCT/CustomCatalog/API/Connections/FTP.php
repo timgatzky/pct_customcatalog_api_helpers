@@ -29,6 +29,16 @@ use Contao\System;
  * Class file
  * FTP
  * Provide methods to communicate with FTP servers
+ * 
+ * Usage:
+ *
+ *     $config = array('host'=>'myServer','user'=>'myUser','password'=>'myPassword');
+ * 
+ *     $ftp = new PCT\CustomCatalog\Connections\FTP( $config );
+ *     $ftp->__set('root','myRootFolder'); // optional root folder
+ *     $ftp->send($source,$destination);
+ *     $ftp->close();
+ * 	
  */
 class FTP
 {
@@ -63,6 +73,7 @@ class FTP
 			throw new \Exception('Missing connection information');
 		}
 
+		// set the config
 		$this->arrConfig = $arrConfig;
 
 		// establish connection
@@ -86,8 +97,6 @@ class FTP
 		{
 			$this->__set('root',$arrConfig['path']);
 		}
-
-		return $this->intResource;
 	}
 
 
@@ -117,6 +126,14 @@ class FTP
 	 */
 	public function __get($strKey)
 	{
+		switch($strKey)
+		{
+			case 'root':
+				return $this->strRoot;
+				break;
+			default:
+				break;
+		}
 		return $this->{$strKey};
 	}
 
