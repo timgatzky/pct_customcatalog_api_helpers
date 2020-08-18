@@ -88,7 +88,7 @@ class TableCustomCatalogApi extends \Contao\Backend
 		$arrReturn = array();
 		if( empty($objDC->activeRecord->connection) === false )
 		{
-			$arrReturn = &array_keys( $GLOBALS['PCT_CUSTOMCATALOG']['API']['CONNECTIONS'][ \strtoupper($objDC->activeRecord->connection) ] ?: array() );	
+			$arrReturn = &array_keys( $GLOBALS['PCT_CUSTOMCATALOG_API']['CONNECTIONS'][ \strtoupper($objDC->activeRecord->connection) ] ?: array() );	
 		}
 		return $arrReturn;
 	}
