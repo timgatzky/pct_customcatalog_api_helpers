@@ -197,9 +197,10 @@ class FTP
 	 * Send a file to a destination 
 	 * @param string $strSource      The source file
 	 * @param string $strDestination The remote file / path
+	 * @param string $strMode 		 The transfer mode
 	 */
-	public function send($strSource, $strDestination)
+	public function send($strSource, $strDestination, $strMode=FTP_ASCII)
 	{
-		return \ftp_put($this->intResource,$this->strRoot .'/'.$strDestination,$strSource);
+		return \ftp_put($this->intResource,$this->strRoot .'/'.$strDestination,$strSource,$strMode);
 	}
 }
