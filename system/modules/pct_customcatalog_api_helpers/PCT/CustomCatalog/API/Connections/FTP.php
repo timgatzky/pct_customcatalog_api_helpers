@@ -85,7 +85,17 @@ class FTP
 		{
 			$this->intResource = \ftp_connect($arrConfig['host'], $arrConfig['port']);
 		}
-
+		
+		// passive mode off
+		if( (boolean)$arrConfig['passive'] === false && empty($arrConfig['passive']) === false )
+		{
+			\ftp_pasv($this->intResource, false);
+		}
+		else
+		{
+			\ftp_pasv($this->intResource, true);
+		}
+		
 		if ($this->intResource === null) 
 		{
 			System::log('Cannot connect to host ' . $arrConfig['host'], __METHOD__, \TL_ERROR);
